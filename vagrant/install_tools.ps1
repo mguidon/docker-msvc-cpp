@@ -26,24 +26,24 @@ $cmake_installer_msi = "$working_directory\cmake.msi"
 $cmake_install_path = "C:\Program Files\CMake"
 $cmake_zip_output_path = "$packages_directory\CMake"
 
-####################################
-# Define Conan information
-####################################
-$conan_version = "1.43.0"
-$conan_version_classifier = "win-64"
-$conan_installer_url = "https://github.com/conan-io/conan/releases/download/$conan_version/conan-$conan_version_classifier.exe"
-$conan_installer_exe = "$working_directory\conan.exe"
-$conan_install_path = "C:\Program Files\Conan"
-$conan_zip_output_path = "$packages_directory\Conan"
+# ####################################
+# # Define Conan information
+# ####################################
+# $conan_version = "1.43.0"
+# $conan_version_classifier = "win-64"
+# $conan_installer_url = "https://github.com/conan-io/conan/releases/download/$conan_version/conan-$conan_version_classifier.exe"
+# $conan_installer_exe = "$working_directory\conan.exe"
+# $conan_install_path = "C:\Program Files\Conan"
+# $conan_zip_output_path = "$packages_directory\Conan"
 
-####################################
-# Define WIX information
-####################################
-$wix_version = "311"
-$wix_binaries_url = "https://github.com/wixtoolset/wix3/releases/download/wix3112rtm/wix311-binaries.zip"
-$wix_binaries = "$working_directory\wix.zip"
-$wix_install_path = "C:\Program Files\WIX"
-$wix_zip_output_path = "$packages_directory\WIX.zip"
+# ####################################
+# # Define WIX information
+# ####################################
+# $wix_version = "311"
+# $wix_binaries_url = "https://github.com/wixtoolset/wix3/releases/download/wix3112rtm/wix311-binaries.zip"
+# $wix_binaries = "$working_directory\wix.zip"
+# $wix_install_path = "C:\Program Files\WIX"
+# $wix_zip_output_path = "$packages_directory\WIX.zip"
 
 ####################################
 # Define Ninja information
@@ -53,6 +53,24 @@ $ninja_binaries_url = "https://github.com/ninja-build/ninja/releases/download/v$
 $ninja_binaries = "$working_directory\ninja.zip"
 $ninja_install_path = "C:\Program Files\Ninja"
 $ninja_zip_output_path = "$packages_directory\Ninja.zip"
+
+####################################
+# TortoiseSVN information
+####################################
+$tsvn_install_path = "C:\Program Files\TortoiseSVN"
+$tsvn_zip_output_path = "$packages_directory\TortoiseSVN.zip"
+
+####################################
+# Python 3.10 information
+####################################
+$py310_install_path = "C:\Python310"
+$py310_zip_output_path = "$packages_directory\Python310.zip"
+
+####################################
+# Git 3.10 information
+####################################
+$git_install_path = "C:\Program Files\Git"
+$git_zip_output_path = "$packages_directory\Git.zip"
 
 ####################################
 # Define Visual Studio information
@@ -108,14 +126,14 @@ Compress-Archive -Path "$windows_sdk_path" -DestinationPath "$sdk_zip_output_pat
 # Prepare Conan Package
 ####################################
 
-Write-Host "Downloading Conan $conan_version"
-Invoke-WebRequest -Uri "$conan_installer_url" -OutFile "$conan_installer_exe"
+# Write-Host "Downloading Conan $conan_version"
+# Invoke-WebRequest -Uri "$conan_installer_url" -OutFile "$conan_installer_exe"
 
-Write-Host "Installing Conan"
-Start-Process -FilePath "$conan_installer_exe" -Wait -ArgumentList "/VERYSILENT /SUPPRESSMSGBOXES";
+# Write-Host "Installing Conan"
+# Start-Process -FilePath "$conan_installer_exe" -Wait -ArgumentList "/VERYSILENT /SUPPRESSMSGBOXES";
 
-Write-Host "Compressing Conan files in an archive"
-Compress-Archive -Path "$conan_install_path" -DestinationPath "$conan_zip_output_path"
+# Write-Host "Compressing Conan files in an archive"
+# Compress-Archive -Path "$conan_install_path" -DestinationPath "$conan_zip_output_path"
 
 ####################################
 # Prepare CMake Package
@@ -134,20 +152,20 @@ Compress-Archive -Path "$cmake_install_path" -DestinationPath "$cmake_zip_output
 # Prepare WIX Package
 ####################################
     
-Write-Host "Downloading WIX $wix_version"
-Invoke-WebRequest -Uri "$wix_binaries_url" -OutFile "$wix_binaries"
+# Write-Host "Downloading WIX $wix_version"
+# Invoke-WebRequest -Uri "$wix_binaries_url" -OutFile "$wix_binaries"
 
-Write-Host "Extracting WIX Binaries into $wix_install_path"
-Expand-Archive -LiteralPath "$wix_binaries" -DestinationPath "$wix_install_path"
+# Write-Host "Extracting WIX Binaries into $wix_install_path"
+# Expand-Archive -LiteralPath "$wix_binaries" -DestinationPath "$wix_install_path"
 
-Write-Host "Adding Wix to the environment Path"
-[Environment]::SetEnvironmentVariable(
-    "Path",
-    [Environment]::GetEnvironmentVariable("Path", [EnvironmentVariableTarget]::Machine) + ";$wix_install_path",
-    [EnvironmentVariableTarget]::Machine)
+# Write-Host "Adding Wix to the environment Path"
+# [Environment]::SetEnvironmentVariable(
+#     "Path",
+#     [Environment]::GetEnvironmentVariable("Path", [EnvironmentVariableTarget]::Machine) + ";$wix_install_path",
+#     [EnvironmentVariableTarget]::Machine)
 
-Write-Host "Copying WIX Binaries archive to the output folder"
-Copy-Item $wix_binaries -Destination "$wix_zip_output_path"
+# Write-Host "Copying WIX Binaries archive to the output folder"
+# Copy-Item $wix_binaries -Destination "$wix_zip_output_path"
 
 ####################################
 # Prepare Ninja Package
@@ -167,6 +185,32 @@ Write-Host "Adding Ninja to the environment Path"
 
 Write-Host "Copying Ninja Binaries archive to the output folder"
 Copy-Item $ninja_binaries -Destination "$ninja_zip_output_path"
+
+####################################
+# Prepare Chocolatey
+####################################
+
+Write-Host "Installing chocolatey"
+Set-ExecutionPolicy Bypass -Scope Process -Force; [System.Net.ServicePointManager]::SecurityProtocol = [System.Net.ServicePointManager]::SecurityProtocol -bor 3072; iex ((New-Object System.Net.WebClient).DownloadString('https://community.chocolatey.org/install.ps1'))
+
+Write-Host "Installing TurtoiseSVN"
+choco install -y tortoisesvn
+
+Write-Host "Installing Python 3.10"
+choco install -y python3
+C:\Python310\python.exe -m pip install six
+
+Write-Host "Installing Git"
+choco install -y git
+
+Write-Host "Compressing TortoiseSVN files in an archive"
+Compress-Archive -Path "$tsvn_install_path" -DestinationPath "$tsvn_zip_output_path"
+
+Write-Host "Compressing Python 3.10 files in an archive"
+Compress-Archive -Path "$py310_install_path" -DestinationPath "$py310_zip_output_path"
+
+Write-Host "Compressing Git files in an archive"
+Compress-Archive -Path "$git_install_path" -DestinationPath "$git_zip_output_path"
 
 ####################################
 # Cleanup
