@@ -29,21 +29,21 @@ $cmake_zip_output_path = "$packages_directory\CMake"
 # ####################################
 # # Define Conan information
 # ####################################
-# $conan_version = "1.43.0"
-# $conan_version_classifier = "win-64"
-# $conan_installer_url = "https://github.com/conan-io/conan/releases/download/$conan_version/conan-$conan_version_classifier.exe"
-# $conan_installer_exe = "$working_directory\conan.exe"
-# $conan_install_path = "C:\Program Files\Conan"
-# $conan_zip_output_path = "$packages_directory\Conan"
+$conan_version = "1.43.0"
+$conan_version_classifier = "win-64"
+$conan_installer_url = "https://github.com/conan-io/conan/releases/download/$conan_version/conan-$conan_version_classifier.exe"
+$conan_installer_exe = "$working_directory\conan.exe"
+$conan_install_path = "C:\Program Files\Conan"
+$conan_zip_output_path = "$packages_directory\Conan"
 
 # ####################################
 # # Define WIX information
 # ####################################
-# $wix_version = "311"
-# $wix_binaries_url = "https://github.com/wixtoolset/wix3/releases/download/wix3112rtm/wix311-binaries.zip"
-# $wix_binaries = "$working_directory\wix.zip"
-# $wix_install_path = "C:\Program Files\WIX"
-# $wix_zip_output_path = "$packages_directory\WIX.zip"
+$wix_version = "311"
+$wix_binaries_url = "https://github.com/wixtoolset/wix3/releases/download/wix3112rtm/wix311-binaries.zip"
+$wix_binaries = "$working_directory\wix.zip"
+$wix_install_path = "C:\Program Files\WIX"
+$wix_zip_output_path = "$packages_directory\WIX.zip"
 
 ####################################
 # Define Ninja information
@@ -71,6 +71,18 @@ $py310_zip_output_path = "$packages_directory\Python310.zip"
 ####################################
 $git_install_path = "C:\Program Files\Git"
 $git_zip_output_path = "$packages_directory\Git.zip"
+
+####################################
+# vscode information
+####################################
+$vscode_install_path = "C:\Program Files\Microsoft VS Code"
+$vscode_zip_output_path = "$packages_directory\vscode.zip"
+
+####################################
+# OpenSSH information
+####################################
+$openssh_install_path = "C:\Program Files\OpenSSH-Win64"
+$openssh_zip_output_path = "$packages_directory\openssh.zip"
 
 ####################################
 # Define Visual Studio information
@@ -122,20 +134,20 @@ Compress-Archive -DestinationPath $vs_zip_output_path $DirsToInclude
 Write-Host "Compressing Windows $windows_sdk_version_major-$windows_sdk_version_minor SDK files in an archive"
 Compress-Archive -Path "$windows_sdk_path" -DestinationPath "$sdk_zip_output_path"
 
-####################################
+# ####################################
 # Prepare Conan Package
 ####################################
 
-# Write-Host "Downloading Conan $conan_version"
-# Invoke-WebRequest -Uri "$conan_installer_url" -OutFile "$conan_installer_exe"
+Write-Host "Downloading Conan $conan_version"
+Invoke-WebRequest -Uri "$conan_installer_url" -OutFile "$conan_installer_exe"
 
-# Write-Host "Installing Conan"
-# Start-Process -FilePath "$conan_installer_exe" -Wait -ArgumentList "/VERYSILENT /SUPPRESSMSGBOXES";
+Write-Host "Installing Conan"
+Start-Process -FilePath "$conan_installer_exe" -Wait -ArgumentList "/VERYSILENT /SUPPRESSMSGBOXES";
 
-# Write-Host "Compressing Conan files in an archive"
-# Compress-Archive -Path "$conan_install_path" -DestinationPath "$conan_zip_output_path"
+Write-Host "Compressing Conan files in an archive"
+Compress-Archive -Path "$conan_install_path" -DestinationPath "$conan_zip_output_path"
 
-####################################
+###################################
 # Prepare CMake Package
 ####################################
 
@@ -152,20 +164,20 @@ Compress-Archive -Path "$cmake_install_path" -DestinationPath "$cmake_zip_output
 # Prepare WIX Package
 ####################################
     
-# Write-Host "Downloading WIX $wix_version"
-# Invoke-WebRequest -Uri "$wix_binaries_url" -OutFile "$wix_binaries"
+Write-Host "Downloading WIX $wix_version"
+Invoke-WebRequest -Uri "$wix_binaries_url" -OutFile "$wix_binaries"
 
-# Write-Host "Extracting WIX Binaries into $wix_install_path"
-# Expand-Archive -LiteralPath "$wix_binaries" -DestinationPath "$wix_install_path"
+Write-Host "Extracting WIX Binaries into $wix_install_path"
+Expand-Archive -LiteralPath "$wix_binaries" -DestinationPath "$wix_install_path"
 
-# Write-Host "Adding Wix to the environment Path"
-# [Environment]::SetEnvironmentVariable(
-#     "Path",
-#     [Environment]::GetEnvironmentVariable("Path", [EnvironmentVariableTarget]::Machine) + ";$wix_install_path",
-#     [EnvironmentVariableTarget]::Machine)
+Write-Host "Adding Wix to the environment Path"
+[Environment]::SetEnvironmentVariable(
+    "Path",
+    [Environment]::GetEnvironmentVariable("Path", [EnvironmentVariableTarget]::Machine) + ";$wix_install_path",
+    [EnvironmentVariableTarget]::Machine)
 
-# Write-Host "Copying WIX Binaries archive to the output folder"
-# Copy-Item $wix_binaries -Destination "$wix_zip_output_path"
+Write-Host "Copying WIX Binaries archive to the output folder"
+Copy-Item $wix_binaries -Destination "$wix_zip_output_path"
 
 ####################################
 # Prepare Ninja Package
@@ -203,6 +215,12 @@ C:\Python310\python.exe -m pip install six
 Write-Host "Installing Git"
 choco install -y git
 
+Write-Host "Installing vscode"
+choco install -y vscode
+
+Write-Host "Installing openssh"
+choco install -y openssh
+
 Write-Host "Compressing TortoiseSVN files in an archive"
 Compress-Archive -Path "$tsvn_install_path" -DestinationPath "$tsvn_zip_output_path"
 
@@ -211,6 +229,13 @@ Compress-Archive -Path "$py310_install_path" -DestinationPath "$py310_zip_output
 
 Write-Host "Compressing Git files in an archive"
 Compress-Archive -Path "$git_install_path" -DestinationPath "$git_zip_output_path"
+
+Write-Host "Compressing vscode files in an archive"
+Compress-Archive -Path "$vscode_install_path" -DestinationPath "$vscode_zip_output_path"
+
+Write-Host "Compressing openssh files in an archive"
+Compress-Archive -Path "$openssh_install_path" -DestinationPath "$openssh_zip_output_path"
+
 
 ####################################
 # Cleanup
