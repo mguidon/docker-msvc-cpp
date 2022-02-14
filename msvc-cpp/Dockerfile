@@ -51,11 +51,32 @@ RUN echo "Extracting Visual C++ compiler" \
     && curl -L http://172.17.0.1:20000/WIX.zip -o WIX.zip \
     && unzip -d Tools/Wix -q WIX.zip; \
     rm -rf WIX.zip \
-    && echo "Fix Permissions" \
+    && echo "Extracting Git" \
+    && curl -L http://172.17.0.1:20000/Git.zip -o Git.zip \
+    && unzip -d Tools/Git -q Git.zip; \
+    rm -rf Git.zip \
+    && echo "Extracting TortoiseSVN" \
+    && curl -L http://172.17.0.1:20000/TortoiseSVN.zip -o TortoiseSVN.zip \
+    && unzip -d Tools/TortoiseSVN -q TortoiseSVN.zip; \
+    rm -rf TortoiseSVN.zip \
+    && echo "Extracting Python310" \
+    && curl -L http://172.17.0.1:20000/Python310.zip -o Python310.zip \
+    && unzip -d Tools/Python310 -q Python310.zip; \
+    rm -rf Python310.zip \
+    && echo "Extracting vscode" \
+    && curl -L http://172.17.0.1:20000/vscode.zip -o vscode.zip \
+    && unzip -d Tools/vscode -q vscode.zip; \
+    rm -rf vscode.zip \
+    && echo "Extracting openssh" \
+    && curl -L http://172.17.0.1:20000/openssh.zip -o openssh.zip \
+    && unzip -d Tools/openssh -q openssh.zip; \
+    rm -rf openssh.zip \    && echo "Fix Permissions" \
     && chmod +x /usr/local/bin/wine64-entrypoint \
     && chown -R wine:root ./Tools Tools/VS2019 Tools/SDK || echo "Done" \
     && chmod -R 775 ./Tools Tools/VS2019 Tools/SDK || echo "Done" ;
     
+RUN setcap cap_net_raw+epi /opt/wine-stable/bin/wine64-preloader
+
 USER wine
 
 ENTRYPOINT [ "/usr/local/bin/wine64-entrypoint" ]

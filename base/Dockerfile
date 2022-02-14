@@ -1,4 +1,4 @@
-FROM ubuntu:20.04
+FROM nvidia/cudagl:11.4.2-runtime-ubuntu20.04
 
 LABEL maintainer="Michele Adduci <adduci@tutanota.com>"
 
@@ -42,6 +42,15 @@ RUN export DEBIAN_FRONTEND="noninteractive" \
     && mkdir -p /home/wine \
     && useradd --system -d /home/wine --shell /bin/bash --uid 1000 --gid root wine \
     && chown -R wine /home/wine
+
+
+
+RUN setcap cap_net_raw+epi /opt/wine-stable/bin/wine64-preloader
+
+# TODO: This does not work. WHY?
+RUN mkdir -p /opt/wine-stable/share/wine/gecko
+RUN curl -o /opt/wine-stable/share/wine/gecko/wine_gecko-2.47.2-x86.msi http://dl.winehq.org/wine/wine-gecko/2.47/wine_gecko-2.47.2-x86.msi
+RUN curl -o /opt/wine-stable/share/wine/gecko/wine_gecko-2.47.2-x86_64.msi http://dl.winehq.org/wine/wine-gecko/2.47/wine_gecko-2.47.2-x86_64.msi
 
 USER wine
 
